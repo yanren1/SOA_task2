@@ -23,6 +23,7 @@ def get_data():
 # 通过GET请求添加数据
 @app.route('/api/data/add', methods=['GET'])
 def add_data():
+    # text = request.args.get('text')
     key = request.args.get('key')
     value = request.args.get('value')
     if key and value:
