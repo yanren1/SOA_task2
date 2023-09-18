@@ -1,9 +1,16 @@
 from flask import Flask, request, jsonify,send_file
 import io
+from diffusers import StableDiffusionPipeline
 from transformers import VisionEncoderDecoderModel, ViTImageProcessor, AutoTokenizer,VitsModel
 import torch
 from PIL import Image
 import scipy
+
+
+
+# init model and pipe
+pipe = StableDiffusionPipeline.from_pretrained("runwayml/stable-diffusion-v1-5", torch_dtype=torch.float16)
+pipe = pipe.to("cuda")
 
 img2text_model = VisionEncoderDecoderModel.from_pretrained("nlpconnect/vit-gpt2-image-captioning")
 img2text_feature_extractor = ViTImageProcessor.from_pretrained("nlpconnect/vit-gpt2-image-captioning")
@@ -19,8 +26,48 @@ tts_model.to(device)
 app = Flask(__name__)
 @app.route('/')
 def hello():
-    return "Welcome to the Image Captioning API!"
+    return "Welcome to the Demo API!"
 
+
+@app.route('/methodList', methods=['get'])
+def get_methods():
+    method_dict = {"text2img":"/text2img",
+                    "TTS":"/tts",
+                   "img2sound":"/img2sound"}
+
+    return jsonify(method_dict)
+
+
+@app.route('/text2img', methods=['get'])
+def text2img():
+    try:
+        prompt = request.args.get('prompt')
+
+        image = pipe(prompt).images[0]
+        image.save("text2img.png")
+
+        return send_file("text2img.png", as_attachment=True, download_name='text2img.png',
+                         mimetype='image/png')
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route('/tts', methods=['get'])
+def myTTS():
+    try:
+        text = request.args.get('text')
+        inputs = tts_tokenizer(text, return_tensors="pt")
+        with torch.no_grad():
+            output = tts_model(**inputs.to(device)).waveform
+
+        scipy.io.wavfile.write("tts.wav", rate=tts_model.config.sampling_rate, data=output[0].cpu().numpy())
+        # return audio file
+        return send_file("tts.wav", as_attachment=True, download_name='tts.wav',
+                         mimetype='audio/wav')
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 @app.route('/img2sound', methods=['POST'])
 def caption_image():
@@ -50,13 +97,16 @@ def caption_image():
         with torch.no_grad():
             output = tts_model(**inputs.to(device)).waveform
 
-        scipy.io.wavfile.write("techno.wav", rate=tts_model.config.sampling_rate, data=output[0].cpu().numpy() )
+        scipy.io.wavfile.write("img2sound.wav", rate=tts_model.config.sampling_rate, data=output[0].cpu().numpy() )
         # return audio file
-        return send_file("techno.wav", as_attachment=True, download_name='output.wav',
+        return send_file("img2sound.wav", as_attachment=True, download_name='img2sound.wav',
                          mimetype='audio/wav')
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
+
+
 
 
 if __name__ == "__main__":
