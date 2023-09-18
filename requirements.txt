@@ -1,0 +1,8 @@
+spyne~=2.14.0
+zeep~=4.2.1
+flask~=2.3.3
+torch~=2.0.1+cu118
+scipy~=1.11.2
+diffusers~=0.21.1
+transformers~=4.33.2
+pillow~=9.3.0
