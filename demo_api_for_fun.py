@@ -1,12 +1,11 @@
-from flask import Flask, request, jsonify,send_file
+from flask import Flask, request, jsonify,send_file,render_template
 import io
 from diffusers import StableDiffusionPipeline
 from transformers import VisionEncoderDecoderModel, ViTImageProcessor, AutoTokenizer,VitsModel
 import torch
 from PIL import Image
 import scipy
-
-
+import base64
 
 # init model and pipe
 pipe = StableDiffusionPipeline.from_pretrained("runwayml/stable-diffusion-v1-5", torch_dtype=torch.float16)
@@ -24,10 +23,10 @@ img2text_model.to(device)
 tts_model.to(device)
 
 app = Flask(__name__)
-@app.route('/')
-def hello():
-    return "Welcome to the Demo API!"
 
+@app.route('/')
+def index():
+    return render_template('index.html')
 
 @app.route('/methodList', methods=['get'])
 def get_methods():
@@ -37,15 +36,14 @@ def get_methods():
 
     return jsonify(method_dict)
 
-
 @app.route('/text2img', methods=['get'])
 def text2img():
     try:
         prompt = request.args.get('prompt')
 
         image = pipe(prompt).images[0]
-        image.save("text2img.png")
 
+        image.save("text2img.png")
         return send_file("text2img.png", as_attachment=True, download_name='text2img.png',
                          mimetype='image/png')
 

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AI Demo</title>
+</head>
+<body>
+    <h1>AI Demo</h1>
+
+    <!-- Text to Image Form -->
+    <h2>Text to Image</h2>
+    <form id="textToImgForm" method="get" action="/text2img">
+        <input type="text" name="prompt" placeholder="Enter text...">
+        <button type="submit">Generate Image</button>
+    </form>
+    <img id="textToImgResult" style="display: none;">
+
+    <!-- Text to Speech Form -->
+    <h2>Text to Speech</h2>
+    <form id="textToSpeechForm" method="get" action="/tts">
+        <input type="text" name="text" placeholder="Enter text...">
+        <button type="submit">Generate Audio</button>
+    </form>
+    <audio id="textToSpeechResult" controls style="display: none;"></audio>
+
+    <!-- Image to Sound Form -->
+    <h2>Image to Sound</h2>
+    <form id="imageToSoundForm" method="post" action="/img2sound" enctype="multipart/form-data">
+        <input type="file" name="image">
+        <button type="submit">Generate Audio</button>
+    </form>
+    <audio id="imageToSoundResult" controls style="display: none;"></audio>
+</body>
+</html>
