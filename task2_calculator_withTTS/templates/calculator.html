@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Calculator</title>
+</head>
+<body>
+    <h1>Calculator</h1>
+    <form method="POST">
+        <input type="text" id="display" name="display" value="{{ display }}" readonly>
+        <br>
+        <input type="submit" name="digit" value="7">
+        <input type="submit" name="digit" value="8">
+        <input type="submit" name="digit" value="9">
+        <input type="submit" name="clear" value="C">
+        <input type="submit" name="Del" value="Del">
+        <br>
+        <input type="submit" name="digit" value="4">
+        <input type="submit" name="digit" value="5">
+        <input type="submit" name="digit" value="6">
+        <input type="submit" name="operation" value="+">
+        <input type="submit" name="operation" value="-">
+
+        <br>
+        <input type="submit" name="digit" value="1">
+        <input type="submit" name="digit" value="2">
+        <input type="submit" name="digit" value="3">
+        <input type="submit" name="operation" value="*">
+        <input type="submit" name="operation" value="/">
+
+        <br>
+        <input type="submit" name="digit" value="0">
+        <input type="submit" name="digit" value=".">
+        <input type="submit" name="operation" value="^">
+        <input type="submit" name="calculate" value="=">
+
+    </form>
+    <p> Number To Dollars Conversion:  {{ n2d }} </p>
+    <p> Number To Word Conversion: {{ n2w }}</p>
+
+</body>
+</html>

@@ -5,7 +5,6 @@ from transformers import VisionEncoderDecoderModel, ViTImageProcessor, AutoToken
 import torch
 from PIL import Image
 import scipy
-import base64
 
 # init model and pipe
 pipe = StableDiffusionPipeline.from_pretrained("runwayml/stable-diffusion-v1-5", torch_dtype=torch.float16)
@@ -95,7 +94,7 @@ def caption_image():
         with torch.no_grad():
             output = tts_model(**inputs.to(device)).waveform
 
-        scipy.io.wavfile.write("img2sound.wav", rate=tts_model.config.sampling_rate, data=output[0].cpu().numpy() )
+        scipy.io.wavfile.write("img2sound.wav", rate=tts_model.config.sampling_rate, data=output[0].cpu().numpy())
         # return audio file
         return send_file("img2sound.wav", as_attachment=True, download_name='img2sound.wav',
                          mimetype='audio/wav')
